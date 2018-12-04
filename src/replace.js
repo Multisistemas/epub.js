@@ -14,6 +14,11 @@ EPUBJS.replace.hrefs = function(callback, renderer){
 				uri,
 				url;
 
+		if(href.indexOf("mailto:") === 0){
+			done();
+			return;
+		}
+
 		if(isRelative != -1){
 
 			link.setAttribute("target", "_blank");
@@ -24,6 +29,10 @@ EPUBJS.replace.hrefs = function(callback, renderer){
 			url = base.getAttribute("href");
 			uri = EPUBJS.core.uri(url);
 			directory = uri.directory;
+
+			if (href.indexOf("#") === 0) {
+				href = uri.filename + href;
+			}
 
 			if(directory) {
 				// We must ensure that the file:// protocol is preserved for
@@ -40,6 +49,7 @@ EPUBJS.replace.hrefs = function(callback, renderer){
 			}
 
 			link.onclick = function(){
+                                book.trigger("book:linkClicked", href);
 				book.goto(relative);
 				return false;
 			};
@@ -67,6 +77,12 @@ EPUBJS.replace.resources = function(callback, renderer){
 
 };
 
+EPUBJS.replace.posters = function(callback, renderer){
+
+	renderer.replaceWithStored("[poster]", "poster", EPUBJS.replace.srcs, callback);
+
+};
+
 EPUBJS.replace.svg = function(callback, renderer) {
 
 	renderer.replaceWithStored("svg image", "xlink:href", function(_store, full, done){
@@ -77,7 +93,13 @@ EPUBJS.replace.svg = function(callback, renderer) {
 
 EPUBJS.replace.srcs = function(_store, full, done){
 
-	_store.getUrl(full).then(done);
+	var isRelative = (full.search("://") === -1);
+
+	if (isRelative) {
+		_store.getUrl(full).then(done);
+	} else {
+		done();
+	}
 
 };
 

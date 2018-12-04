@@ -121,7 +121,7 @@ EPUBJS.Renderer.prototype.displayChapter = function(chapter, globalLayout){
 				this.currentChapter.unload(); // Remove stored blobs
 
 				if(this.render.window){
-					this.render.window.removeEventListener("resize", this.resized);
+					this.render.window.onresize = null;
 				}
 
 				this.removeEventListeners();
@@ -216,7 +216,7 @@ EPUBJS.Renderer.prototype.afterLoad = function(contents) {
 
 	// window.addEventListener("orientationchange", this.onResized.bind(this), false);
 	if(!this.initWidth && !this.initHeight){
-		this.render.window.addEventListener("resize", this.resized, false);
+		this.render.window.onresize = this.resized;
 	}
 
 	this.addEventListeners();
@@ -396,7 +396,7 @@ EPUBJS.Renderer.prototype.visible = function(bool){
 EPUBJS.Renderer.prototype.remove = function() {
 	if(this.render.window) {
 		this.render.unload();
-		this.render.window.removeEventListener("resize", this.resized);
+		this.render.window.onresize = null;
 		this.removeEventListeners();
 		this.removeSelectionListeners();
 	}

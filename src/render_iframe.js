@@ -29,6 +29,11 @@ EPUBJS.Render.Iframe.prototype.addIframe = function(){
 	// Back up if seamless isn't supported
 	this.iframe.style.border = "none";
 
+	// For iOS safari
+	// https://stackoverflow.com/questions/23083462/how-to-get-an-iframe-to-be-responsive-in-ios-safari
+	this.iframe.style.width = "1px";
+	this.iframe.style.minWidth = "100%";
+
 	this.iframe.addEventListener("load", this.loaded.bind(this), false);
 
 	if (this._width || this._height) {
@@ -68,7 +73,7 @@ EPUBJS.Render.Iframe.prototype.load = function(contents, url){
 		render.bodyEl = render.document.body || render.document.querySelector("body");
 		render.window = render.iframe.contentWindow;
 
-		render.window.addEventListener("resize", render.resized.bind(render), false);
+		render.window.onresize = render.resized.bind(render);
 
 		// Reset the scroll position
 		render.leftPos = 0;
@@ -315,7 +320,7 @@ EPUBJS.Render.Iframe.prototype.scroll = function(bool){
 
 // Cleanup event listeners
 EPUBJS.Render.Iframe.prototype.unload = function(){
-	this.window.removeEventListener("resize", this.resized);
+	this.window.onresized = null;
 	this.iframe.removeEventListener("load", this.loaded);
 };
 
