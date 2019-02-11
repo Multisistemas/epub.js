@@ -77,12 +77,6 @@ class Path {
 	 * @returns {string} relative
 	 */
 	relative (what) {
-		var isAbsolute = what && (what.indexOf("://") > -1);
-
-		if (isAbsolute) {
-			return what;
-		}
-
 		return path.relative(this.directory, what);
 	}
 

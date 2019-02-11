@@ -181,7 +181,7 @@ class Queue {
 
 	/**
 	 * Get the number of tasks in the queue
-	 * @return {number} tasks
+	 * @return {int} tasks
 	 */
 	length(){
 		return this._q.length;
