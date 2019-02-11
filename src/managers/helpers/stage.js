@@ -1,5 +1,5 @@
 import {uuid, isNumber, isElement, windowBounds} from "../../utils/core";
-import throttle from 'lodash/throttle'
+import throttle from "lodash/throttle";
 
 class Stage {
 	constructor(_options) {
@@ -151,22 +151,16 @@ class Stage {
 
 	size(width, height){
 		var bounds;
-		let _width = width || this.settings.width;
-		let _height = height || this.settings.height;
+		// var width = _width || this.settings.width;
+		// var height = _height || this.settings.height;
 
 		// If width or height are set to false, inherit them from containing element
 		if(width === null) {
 			bounds = this.element.getBoundingClientRect();
 
 			if(bounds.width) {
-				width = Math.floor(bounds.width);
-				this.container.style.width = width + "px";
-			}
-		} else {
-			if (isNumber(width)) {
-				this.container.style.width = width + "px";
-			} else {
-				this.container.style.width = width;
+				width = bounds.width;
+				this.container.style.width = bounds.width + "px";
 			}
 		}
 
@@ -175,20 +169,14 @@ class Stage {
 
 			if(bounds.height) {
 				height = bounds.height;
-				this.container.style.height = height + "px";
+				this.container.style.height = bounds.height + "px";
 			}
 
-		} else {
-			if (isNumber(height)) {
-				this.container.style.height = height + "px";
-			} else {
-				this.container.style.height = height;
-			}
 		}
 
 		if(!isNumber(width)) {
 			bounds = this.container.getBoundingClientRect();
-			width = Math.floor(bounds.width);
+			width = bounds.width;
 			//height = bounds.height;
 		}
 
@@ -210,24 +198,11 @@ class Stage {
 
 		// Bounds not set, get them from window
 		let _windowBounds = windowBounds();
-		let bodyStyles = window.getComputedStyle(document.body);
-		let bodyPadding = {
-			left: parseFloat(bodyStyles["padding-left"]) || 0,
-			right: parseFloat(bodyStyles["padding-right"]) || 0,
-			top: parseFloat(bodyStyles["padding-top"]) || 0,
-			bottom: parseFloat(bodyStyles["padding-bottom"]) || 0
-		};
-
-		if (!_width) {
-			width = _windowBounds.width -
-								bodyPadding.left -
-								bodyPadding.right;
+		if (!width) {
+			width = _windowBounds.width;
 		}
-
-		if ((this.settings.fullsize && !_height) || !_height) {
-			height = _windowBounds.height -
-								bodyPadding.top -
-								bodyPadding.bottom;
+		if (this.settings.fullsize || !height) {
+			height = _windowBounds.height;
 		}
 
 		return {
@@ -316,12 +291,6 @@ class Stage {
 		}
 	}
 
-	overflow(overflow) {
-		if (this.container) {
-			this.container.style["overflow"] = overflow;
-		}
-	}
-
 	destroy() {
 		var base;
 
@@ -333,8 +302,8 @@ class Stage {
 				base = this.container;
 			}
 
-			if(this.element.contains(this.container)) {
-				this.element.removeChild(this.container);
+			if(this.element.contains(base)) {
+				this.element.removeChild(base);
 			}
 
 			window.removeEventListener("resize", this.resizeFunc);
