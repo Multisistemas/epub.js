@@ -37,7 +37,6 @@ module.exports = {
           "error",
           { "vars": "all", "args": "none" }
         ],
-        "no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
-        "valid-jsdoc": ["warn"]
+        "no-mixed-spaces-and-tabs": ["error", "smart-tabs"]
     }
 };
